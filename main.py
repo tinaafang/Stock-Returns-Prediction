@@ -31,7 +31,7 @@ def get_ticker_info(ticker):
         pass
 
 def normalize(lst):
-    minmax_in = open(r"C:\Users\sunny\Desktop\side\static\mm.pickle",'rb')
+    minmax_in = open(r"C:\Users\sunny\Desktop\side\static\mins_and_maxs.pickle",'rb')
     mins_and_maxs = pickle.load(minmax_in)
     mins = mins_and_maxs[0]
     maxs = mins_and_maxs[1]
@@ -45,7 +45,6 @@ def predict_stock(ticker_info):
     acc = pickle.load(acc_in)
     model = pickle.load(model_in)
     returns_prediction = model.predict(ticker_info)
-    print(returns_prediction)
     result_lst = [returns_prediction, acc]
     return result_lst
 
