@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+{% block title %}Stock Returns Prediction{% endblock %}
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p>{{msg}}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+<form action = '#' method = 'post'>
+    <p>Enter the ticker below</p>
+    <p><input type = 'text' name = 'tkr' /></p>
+    <p><input type = 'submit' value = 'submit'/></p>
+</form>
+{% endblock %}

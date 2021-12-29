@@ -1,0 +1,18 @@
+{% extends "index.html" %}
+
+{% block title %}Result{% endblock %}
+
+{% block content %}
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p>{{msg}}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <p>{{ticker}} will have a {{final_result}} return after three months with the possibility of {{acc}}%.</p>
+    <form action = '#' method = 'post'>
+        <p><input type = 'submit' name = 'submit_button' value = 'Predict Another'/></p>
+    </form>
+{% endblock %}

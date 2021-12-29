@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block title %}{% endblock %}</title>
+    <link href="{{url_for('static',filename= 'style.css')}}" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+		<header>
+		<nav>
+			<ul class = 'navbars'>
+				<div>
+				<li><a href = '/'>Home</a></li>
+				<li><a href = '/prediction'>Predict</a></li>
+				</div>
+				</ul>
+		</nav>
+		</header>
+	{% block content %}{% endblock %}
+
+  </body>
+</html>
