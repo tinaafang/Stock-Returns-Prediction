@@ -114,10 +114,11 @@ def get_plots(prices5m,prices1y, prev_close, avg, symbol,start_date1d_str):
     ax1.set_xticks(ax1.get_xticks()[::6])
     ax1.tick_params(labelrotation=45)
     # Save the plot and clear the figure
-    prices1d_pic = BytesIO()
+    '''prices1d_pic = BytesIO()
     fig1.savefig(prices1d_pic, format='png')
     prices1d_encoded = base64.b64encode(prices1d_pic.getvalue()).decode('utf-8')
-    prices1d_html = '<img src=\'data:image/png;base64,{}\'>'.format(prices1d_encoded)
+    prices1d_html = '<img src=\'data:image/png;base64,{}\'>'.format(prices1d_encoded)'''
+    fig1.savefig(r'static\price1d.png')
     fig1.clear()
     
 
@@ -132,13 +133,13 @@ def get_plots(prices5m,prices1y, prev_close, avg, symbol,start_date1d_str):
     ax2.set_title(symbol+": Historical Closing Price 1Y")
     ax2.legend(loc = 'best')
     # Save the plot and clear the figure
-    prices1y_pic = BytesIO()
+    '''prices1y_pic = BytesIO()
     fig2.savefig(prices1y_pic, format='png')
     prices1y_encoded = base64.b64encode(prices1y_pic.getvalue()).decode('utf-8')
-    prices1y_html = '<img src=\'data:image/png;base64,{}\'>'.format(prices1y_encoded)
+    prices1y_html = '<img src=\'data:image/png;base64,{}\'>'.format(prices1y_encoded)'''
+    fig2.savefig(r'static\price1y.png')
     fig2.clear()
 
-    return prices1d_html, prices1y_html
     
     
 
@@ -173,7 +174,7 @@ def additional_info(symbol):
     time = [str(i)[11:16] for i in time]
     prices5m.index = time
     # Plot the prices and save as png
-    prices1d_html, prices1y_html = get_plots(prices5m,prices1y, prev_close, avg, symbol,start_date1d_str)
+    get_plots(prices5m,prices1y, prev_close, avg, symbol,start_date1d_str)
     # Get the open,high, low
     open = round(prices1d['Open'][0],2)
     high = round(prices1d['High'][0],2)
@@ -210,7 +211,7 @@ def additional_info(symbol):
         dividendYield = '-'
 
     # Return all the info
-    return [current,currency,high52,low52,pe,dividendYield,marketCap,open,high,low,prices1d_html, prices1y_html]
+    return [current,currency,high52,low52,pe,dividendYield,marketCap,open,high,low]
 
 
 # Set the route for the prediction page, which is also the home page
@@ -247,7 +248,7 @@ def result(ticker):
         # Get the additional info and store the price change plot
         info_lst = additional_info(ticker)
         # Display the html page with prediction, additional info and the plots
-        return render_template("result.html",prices1d_html = info_lst[10], prices1y_html = info_lst[11], info_lst = info_lst,ticker = result_lst[0], final_result = result_lst[1], acc = result_lst[2]*100)
+        return render_template("result.html", info_lst = info_lst,ticker = result_lst[0], final_result = result_lst[1], acc = result_lst[2]*100)
     # If the ticker is not in session
     else:
         # First get the features columns needed for the prediction
@@ -270,7 +271,7 @@ def result(ticker):
             info_lst = additional_info(ticker)
             # Store the ticker, prediction result and the accuracy into the session
             session[ticker] = [ticker,final_result,acc]
-            return render_template("result.html",prices1d_html = info_lst[10], prices1y_html = info_lst[11],info_lst = info_lst, ticker = ticker, final_result = final_result, acc = acc)
+            return render_template("result.html",info_lst = info_lst, ticker = ticker, final_result = final_result, acc = acc)
         # If any error occurs, send a error message to the user, then return to the prediction page
         else:
             flash(f"Can't get info for {ticker}, please try another ticker. ",'warning')
