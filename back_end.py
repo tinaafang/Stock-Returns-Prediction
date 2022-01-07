@@ -13,7 +13,7 @@ from sklearn.model_selection import GridSearchCV
 import pickle
 
 def get_tickers():
-    '''Get a list of tickers listed in US market'''
+    '''Get a list of tickers in US market'''
     # Get lists of tickers and put them in a set
     sp500 = set(si.tickers_sp500())
     nasdaq = set(si.tickers_nasdaq())
@@ -34,18 +34,19 @@ def get_tickers():
     return list(good_tickers)
 
 def timing(ticker,today,tomorrow):
-    '''Find the dates that works for calculating returns'''
+    '''Find the dates that works for calculating returns for features and target'''
     try:
         # Returns as features are returns from start date to mid date, which are what we're given
         # Returns as target are returns from mid date to end date, which are what we're trying to predict
-
-        # End date is the latest date with valid stock data, the closing price on end date serves as the end date of calculating the target returns
+        # Start date represents three months in the past, mid date represets the current, end date represents three months in the future
+        # Since we can't look into the future, we move the timeline three months backwards
+        # End date becomes the current date
         end_date = ticker.history(start = today -  datetime.timedelta(10),end = today,interval = '1d')['Close'].index[-1]
         end_end = tomorrow
-        # Mid date is 90 days before the end date, the closing price on mid date serves as the end date of calculating the features returns and the start date of calculating the target returns
+        # Mid date becomes three months before
         mid_date = end_date -  datetime.timedelta(90)
         mid_end = mid_date +  datetime.timedelta(10)
-        # Start date is 90 days before the mid date, the closing price on start date serves as the start date of calculating the features returns
+        # start date becomes six months before
         start_date = mid_date -  datetime.timedelta(90)
         start_end = start_date +  datetime.timedelta(10)
         # Return the dates in string
@@ -53,31 +54,32 @@ def timing(ticker,today,tomorrow):
     except:
         pass
     
-def prepare_features(symbol):
-    '''prepare the information needed for calculating the feature columns'''
+def get_features(symbol):
+    '''prepare the information needed for the features'''
     # Set up today's date and the ticker
     today = date.today()
+    tomorrow = today + datetime.timedelta(1)
     ticker = yf.Ticker(symbol)
     try:
         # Get start price,mid price and end price using the dates from the timing function
-        start_date,start_end,mid_date,mid_end,end_date,end_end = timing(ticker,today)
+        start_date,start_end,mid_date,mid_end,end_date,end_end = timing(ticker,today,tomorrow)
         end_price = float(ticker.history(start = end_date,end = end_end,interval = '1d')['Close'][0])
         start_price = float(ticker.history(start = start_date,end = start_end,interval = '1d')['Close'][0])
         mid_price = float(ticker.history(start = mid_date,end = mid_end,interval = '1d')['Close'][0])
         # Get the dividend yield, average volume and fifty-day average 
-        dividendYield = ticker.info['dividendYield']
-        averageVolume = ticker.info['averageVolume']
-        fiftyDayAverage = ticker.info['fiftyDayAverage']
+        dividendYield = si.get_quote_data(symbol)['trailingAnnualDividendYield']
+        volume = si.get_quote_data(symbol)['regularMarketVolume']
+        fiftyDayAverage = si.get_quote_data(symbol)['fiftyDayAverage']
         # Return the above information
-        return [symbol,averageVolume,fiftyDayAverage,dividendYield,start_price,mid_price,end_price]
+        return symbol,volume,fiftyDayAverage,dividendYield,start_price,mid_price,end_price
     except:
         pass
 
 
 def collect_data(df, symbols):
-    '''Use multithreading to get information from the prepare_features function'''
+    '''Use multithreading to get information from the prepare_features() function'''
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        result = executor.map(prepare_features,symbols)
+        result = executor.map(get_features,symbols)
     for i in result:
         try:
             df[i[0]] = [i[1],i[2],i[3],i[4],i[5],i[6]]
@@ -86,11 +88,11 @@ def collect_data(df, symbols):
     return df
 
 def get_dataset(data):
-    '''Create the dataset using the information collected before'''
+    '''Create the dataset using the information collected from the collect_data() function'''
     # Transpose the dataframe
     data = data.T
     # Rename the columns
-    data.columns = ['averageVolume','fiftyDayAverage','dividendYield','start_price','mid_price','end_price']
+    data.columns = ['volume','fiftyDayAverage','dividendYield','start_price','mid_price','end_price']
     # Replace Nan in dividendYield with 0
     data['dividendYield']=data['dividendYield'].fillna(0)
     # Calculate the dividend for feature returns and dividend returns
@@ -103,7 +105,7 @@ def get_dataset(data):
     data['target_returns'] = (data['end_price']-data['mid_price']+data['target_dividend'])
     # Diff measures how much the mid price is above or below the average price
     data['diff'] = data['mid_price'] - data['fiftyDayAverage']
-    # The target is 1 if the target return is positive, 0 if the target return is negative
+    # Set target to 1 if the target return is positive, 0 if it is negative
     target = (data['target_returns']>0) 
     target = target.values.tolist()
     mapping = {True: 1, False: 0}
@@ -111,7 +113,7 @@ def get_dataset(data):
     data['target'] = target
     # Reset the index and drop the extra columns
     data.reset_index(drop = True,inplace=True)
-    data = data.drop(['start_price','end_price','dividendYield','fiftyDayAverage','target_returns'],axis=1)
+    data = data.drop(['start_price','end_price','dividendYield','fiftyDayAverage','target_returns','target_dividend'],axis=1)
     # Return the dataset
     return data
 
@@ -129,7 +131,7 @@ def get_x_y(data):
     features = features.apply(lambda x: (x - x.min(axis=0))/ (x.max(axis=0) - x.min(axis= 0 )))
     # Convert features and target into numpy arrays
     y = np.array(data.target)
-    x = np.array(list(zip(features['averageVolume'].tolist(),features['mid_price'].tolist(),features['returns'].tolist(),features['diff'].tolist(),features['dividend'].tolist())))
+    x = np.array(list(zip(features['volume'].tolist(),features['mid_price'].tolist(),features['feature_returns'].tolist(),features['diff'].tolist(),features['feature_dividend'].tolist())))
     # Return features, target and the mins and maxs of each column
     return x,y, [mins,maxs]
 
@@ -179,7 +181,7 @@ def main():
         pickle.dump(best_acc,f)
     
 # Run the main function every monday at 00:00
-schedule.every().monday.at('00:00').do(main)
+schedule.every().thursday.at('13:06').do(main)
 while 1:
     schedule.run_pending()
     time.sleep(1)
