@@ -53,7 +53,6 @@ pyppeteer==0.2.6
 pyquery==1.4.3
 python-dateutil==2.8.2
 pytz==2021.3
-pywin32==303
 pyzmq==22.3.0
 requests==2.26.0
 requests-html==0.10.0
