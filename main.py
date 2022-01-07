@@ -218,7 +218,7 @@ def additional_info(symbol):
 @app.route('/',methods = ['POST','GET'])     
 @app.route('/prediction',methods = ['POST','GET'])
 def prediction():
-    test_in = open(r"static\acc.pickle",'rb')
+    test_in = open("acc.pickle",'rb')
     test = pickle.load(test_in)
     '''The prediction page receives the ticker through html form and redirect the user to the result page'''
     # If the submit button id requested
