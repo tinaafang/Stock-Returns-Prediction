@@ -218,6 +218,8 @@ def additional_info(symbol):
 @app.route('/',methods = ['POST','GET'])     
 @app.route('/prediction',methods = ['POST','GET'])
 def prediction():
+    test_in = open(r"static\acc.pickle",'rb')
+    test = pickle.load(test_in)
     '''The prediction page receives the ticker through html form and redirect the user to the result page'''
     # If the submit button id requested
     if request.method == 'POST':
@@ -232,7 +234,7 @@ def prediction():
             flash("Please enter a proper ticker.",'warning')
             return redirect(url_for("prediction"))
     else:
-        return render_template("prediction.html")
+        return render_template("prediction.html", test = test)
 
 # Set up the route(which is the ticker name) for the result page
 @app.route('/<ticker>',methods = ['POST','GET'])
