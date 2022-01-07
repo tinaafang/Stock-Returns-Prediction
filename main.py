@@ -44,7 +44,7 @@ def get_ticker_info(symbol):
 def normalize(lst):
     '''Normalize the features values between 0 to 1'''
     # Get the mins and maxs of the features columns
-    minmax_in = open(r"C:\Users\sunny\Desktop\side\static\mins_and_maxs.pickle",'rb')
+    minmax_in = open(r"static\mins_and_maxs.pickle",'rb')
     mins_and_maxs = pickle.load(minmax_in)
     mins = mins_and_maxs[0]
     maxs = mins_and_maxs[1]
@@ -56,8 +56,8 @@ def normalize(lst):
 def predict_stock(ticker_info):
     '''Given the features, predict the stock returns'''
     # Get the model and accuracy we stored
-    model_in = open(r"C:\Users\sunny\Desktop\side\static\model.pickle",'rb')
-    acc_in = open(r"C:\Users\sunny\Desktop\side\static\acc.pickle",'rb')
+    model_in = open(r"static\model.pickle",'rb')
+    acc_in = open(r"static\acc.pickle",'rb')
     acc = pickle.load(acc_in)
     model = pickle.load(model_in)
     # Predict the returns

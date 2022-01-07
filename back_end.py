@@ -145,12 +145,12 @@ def main():
     data = collect_data(data, symbols)
     data = get_dataset(data)
     # Store the dataset
-    data.to_csv(r'C:\Users\sunny\Desktop\side\static\my_data.csv',index=False)
-    data = pd.read_csv(r'C:\Users\sunny\Desktop\side\static\my_data.csv')
+    data.to_csv(r'static\my_data.csv',index=False)
+    data = pd.read_csv(r'static\my_data.csv')
     # Get features, target and split them into train set and test set. Also store the mins and maxs.
     x,y,mins_and_maxs = get_x_y(data)
     x_train,x_test,y_train,y_test = sklearn.model_selection.train_test_split(x,y,test_size = 0.1)
-    with open(r"C:\Users\sunny\Desktop\side\static\mins_and_maxs.pickle",'wb') as f:
+    with open(r"static\mins_and_maxs.pickle",'wb') as f:
         pickle.dump(mins_and_maxs,f)
     # Create a parameter grid for grid search
     param_grid = [{
@@ -174,10 +174,10 @@ def main():
         # If the current acc is greater then the best acc, replace best_acc with acc then store the model
         if acc>best_acc:
             best_acc = acc
-            with open(r"C:\Users\sunny\Desktop\side\static\model.pickle",'wb') as f:
+            with open(r"static\model.pickle",'wb') as f:
                 pickle.dump(model,f)
     # Store the best accuracy
-    with open(r"C:\Users\sunny\Desktop\side\static\acc.pickle",'wb') as f:
+    with open(r"static\acc.pickle",'wb') as f:
         pickle.dump(best_acc,f)
     
 # Run the main function every monday at 00:00
