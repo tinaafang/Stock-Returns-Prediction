@@ -44,7 +44,7 @@ def get_ticker_info(symbol):
 def normalize(lst):
     '''Normalize the features values between 0 to 1'''
     # Get the mins and maxs of the features columns
-    minmax_in = open(r"static\mins_and_maxs.pickle",'rb')
+    minmax_in = open("mins_and_maxs.pickle",'rb')
     mins_and_maxs = pickle.load(minmax_in)
     mins = mins_and_maxs[0]
     maxs = mins_and_maxs[1]
@@ -56,8 +56,8 @@ def normalize(lst):
 def predict_stock(ticker_info):
     '''Given the features, predict the stock returns'''
     # Get the model and accuracy we stored
-    model_in = open(r"static\model.pickle",'rb')
-    acc_in = open(r"static\acc.pickle",'rb')
+    model_in = open("model.pickle",'rb')
+    acc_in = open("acc.pickle",'rb')
     acc = pickle.load(acc_in)
     model = pickle.load(model_in)
     # Predict the returns
@@ -218,8 +218,6 @@ def additional_info(symbol):
 @app.route('/',methods = ['POST','GET'])     
 @app.route('/prediction',methods = ['POST','GET'])
 def prediction():
-    test_in = open("acc.pickle",'rb')
-    test = pickle.load(test_in)
     '''The prediction page receives the ticker through html form and redirect the user to the result page'''
     # If the submit button id requested
     if request.method == 'POST':
@@ -234,7 +232,7 @@ def prediction():
             flash("Please enter a proper ticker.",'warning')
             return redirect(url_for("prediction"))
     else:
-        return render_template("prediction.html", test = test)
+        return render_template("prediction.html")
 
 # Set up the route(which is the ticker name) for the result page
 @app.route('/<ticker>',methods = ['POST','GET'])
@@ -250,7 +248,7 @@ def result(ticker):
         # Get the additional info and store the price change plot
         info_lst = additional_info(ticker)
         # Display the html page with prediction, additional info and the plots
-        return render_template("result.html", info_lst = info_lst,ticker = result_lst[0], final_result = result_lst[1], acc = result_lst[2]*100)
+        return render_template("result.html", info_lst = info_lst,ticker = result_lst[0], final_result = result_lst[1], acc = result_lst[2])
     # If the ticker is not in session
     else:
         # First get the features columns needed for the prediction

@@ -150,7 +150,7 @@ def main():
     # Get features, target and split them into train set and test set. Also store the mins and maxs.
     x,y,mins_and_maxs = get_x_y(data)
     x_train,x_test,y_train,y_test = sklearn.model_selection.train_test_split(x,y,test_size = 0.1)
-    with open(r"static\mins_and_maxs.pickle",'wb') as f:
+    with open("mins_and_maxs.pickle",'wb') as f:
         pickle.dump(mins_and_maxs,f)
     # Create a parameter grid for grid search
     param_grid = [{
@@ -174,10 +174,10 @@ def main():
         # If the current acc is greater then the best acc, replace best_acc with acc then store the model
         if acc>best_acc:
             best_acc = acc
-            with open(r"static\model.pickle",'wb') as f:
+            with open("model.pickle",'wb') as f:
                 pickle.dump(model,f)
     # Store the best accuracy
-    with open(r"static\acc.pickle",'wb') as f:
+    with open("acc.pickle",'wb') as f:
         pickle.dump(best_acc,f)
     
 # Run the main function every monday at 00:00
