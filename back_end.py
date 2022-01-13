@@ -164,7 +164,7 @@ def main():
     # Initiaize the best accuracy to 0
     best_acc = 0
     # Iterate to find a higher accuracy
-    for i in range(1000):
+    while best_acc < 0.87:
         # Split the dataset, train the model, get the prediction then score the accuracy
         x_train,x_test,y_train,y_test = sklearn.model_selection.train_test_split(x,y,test_size = 0.1)
         model = best_model.best_estimator_
@@ -174,14 +174,15 @@ def main():
         # If the current acc is greater then the best acc, replace best_acc with acc then store the model
         if acc>best_acc:
             best_acc = acc
-            with open("model.pickle",'wb') as f:
+            
+    # Store the best model and accuracy
+    with open("model.pickle",'wb') as f:
                 pickle.dump(model,f)
-    # Store the best accuracy
     with open("acc.pickle",'wb') as f:
         pickle.dump(best_acc,f)
     
 # Run the main function every monday at 00:00
-schedule.every().wednesday.at('17:00').do(main)
+schedule.every().thursday.at('16:35').do(main)
 while 1:
     schedule.run_pending()
     time.sleep(1)
