@@ -114,10 +114,6 @@ def get_plots(prices5m,prices1y, prev_close, avg, symbol,start_date1d_str):
     ax1.set_xticks(ax1.get_xticks()[::6])
     ax1.tick_params(labelrotation=45)
     # Save the plot and clear the figure
-    '''prices1d_pic = BytesIO()
-    fig1.savefig(prices1d_pic, format='png')
-    prices1d_encoded = base64.b64encode(prices1d_pic.getvalue()).decode('utf-8')
-    prices1d_html = '<img src=\'data:image/png;base64,{}\'>'.format(prices1d_encoded)'''
     fig1.savefig(r'static\price1d.png')
     fig1.clear()
     
@@ -133,10 +129,6 @@ def get_plots(prices5m,prices1y, prev_close, avg, symbol,start_date1d_str):
     ax2.set_title(symbol+": Historical Closing Price 1Y")
     ax2.legend(loc = 'best')
     # Save the plot and clear the figure
-    '''prices1y_pic = BytesIO()
-    fig2.savefig(prices1y_pic, format='png')
-    prices1y_encoded = base64.b64encode(prices1y_pic.getvalue()).decode('utf-8')
-    prices1y_html = '<img src=\'data:image/png;base64,{}\'>'.format(prices1y_encoded)'''
     fig2.savefig(r'static\price1y.png')
     fig2.clear()
 
