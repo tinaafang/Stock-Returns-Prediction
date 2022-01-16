@@ -114,7 +114,7 @@ def get_plots(prices5m,prices1y, prev_close, avg, symbol,start_date1d_str):
     ax1.set_xticks(ax1.get_xticks()[::6])
     ax1.tick_params(labelrotation=45)
     # Save the plot and clear the figure
-    fig1.savefig(r'static\price1d.png')
+    fig1.savefig("static/price1d.png")
     fig1.clear()
     
 
@@ -129,7 +129,7 @@ def get_plots(prices5m,prices1y, prev_close, avg, symbol,start_date1d_str):
     ax2.set_title(symbol+": Historical Closing Price 1Y")
     ax2.legend(loc = 'best')
     # Save the plot and clear the figure
-    fig2.savefig(r'static\price1y.png')
+    fig2.savefig('static/price1y.png')
     fig2.clear()
 
     
