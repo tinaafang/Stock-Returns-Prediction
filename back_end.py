@@ -164,7 +164,7 @@ def main():
     # Initiaize the best accuracy to 0
     best_acc = 0
     # Iterate to find a higher accuracy
-    for i in range(1000):
+    for i in range(500):
         # Split the dataset, train the model, get the prediction then score the accuracy
         x_train,x_test,y_train,y_test = sklearn.model_selection.train_test_split(x,y,test_size = 0.1)
         model = best_model.best_estimator_
@@ -182,7 +182,7 @@ def main():
         pickle.dump(best_acc,f)
     
 # Run the main function every monday at 00:00
-schedule.every().sunday.at('02:03').do(main)
+schedule.every().monday.at('00:00').do(main)
 while 1:
     schedule.run_pending()
     time.sleep(1)
