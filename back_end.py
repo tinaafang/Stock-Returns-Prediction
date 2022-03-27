@@ -182,7 +182,7 @@ def main():
         pickle.dump(best_acc,f)
     
 # Run the main function every monday at 00:00
-schedule.every().monday.at('00:00').do(main)
+schedule.every().sunday.at('12:49').do(main)
 while 1:
     schedule.run_pending()
     time.sleep(1)
