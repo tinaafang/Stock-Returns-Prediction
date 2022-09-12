@@ -256,9 +256,9 @@ def result(ticker):
             acc = round(acc,2)*100
             # Convert 1 and 0 into positive and negative
             if final_result == 1:
-                final_result = 'positive'
+                final_result = ''
             else:
-                final_result = 'negative'
+                final_result = 'NOT'
             # Get the additional info and store the price change plot
             info_lst = additional_info(ticker)
             # Store the ticker, prediction result and the accuracy into the session
