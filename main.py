@@ -258,7 +258,7 @@ def result(ticker):
             if final_result == 1:
                 final_result = ''
             else:
-                final_result = 'NOT'
+                final_result = 'NOT '
             # Get the additional info and store the price change plot
             info_lst = additional_info(ticker)
             # Store the ticker, prediction result and the accuracy into the session
