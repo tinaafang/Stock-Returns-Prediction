@@ -1,10 +1,6 @@
 # Stock Returns Prediction
 A website that predicts whether a ticker will have positive returns in three months using machine learning, with additional stock information and price change plots presented. 
 
-# Demo
-Try it here.
-screen shots
-
 # Algorithm
 
 There are three components in the process of building the website, each using different approachs and algorithms.
